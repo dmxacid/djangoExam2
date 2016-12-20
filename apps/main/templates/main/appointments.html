@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Appointments</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        $("#datepicker").datepicker({minDate: 0});
+    });
+    </script>
+  </head>
+  <style>
+    #red {
+      color: red;
+    }
+    #header{
+      display: inline-block;
+    }
+    .links{
+      display: inline-block;
+      /*vertical-align: top;*/
+    }
+    .right{
+      float: right;
+    }
+    #wrapper{
+      width: 800px;
+    }
+  </style>
+  <body>
+    <div id="wrapper">
+      <div class="links">
+        <h2>Welcome, {{ request.session.user_fname }}!</h2>
+      </div>
+      <div class ="links, right">
+        <form class="" action="{% url 'users:logout' %}" method="post">
+          {% csrf_token %}
+          <input type="submit" name="" value="Logout">
+        </form>
+      </div>
+      <div id="appointmentList">
+        <h3>Here are your appointments for today, {{ request.session.today }}:</h3>
+        <table border = 1>
+          <thead>
+            <tr>
+              <td>Tasks</td>
+              <td>Time</td>
+              <td>Status</td>
+              <td>Action</td>
+            </tr>
+          </thead>
+          <tbody>
+            {% for eachKey in appointments %}
+              {% if request.session.today == eachKey.appointDay %}
+                <tr>
+                  <td>{{ eachKey.tasks }}</td>
+                  <td>{{ eachKey.appointTime }}</td>
+                  <td>{{ eachKey.status }}</td>
+                  <td><a href="edit/{{eachKey.id}}">Edit</a><a href="delete/{{eachKey.id}}">Delete</a></td>
+                  
+                </tr>
+                {% endif %}
+            {% endfor %}
+
+          </tbody>
+        </table>
+      </div>
+      <div id="otherAppointments">
+        <h3>Your other appointments</h3>
+        <table border = 1>
+          <thead>
+            <tr>
+              <td>Tasks</td>
+              <td>Date</td>
+              <td>Time</td>
+            </tr>
+          </thead>
+          <tbody>
+            {% for eachKey in appointments %}
+              {% if request.session.today != eachKey.appointDay %}
+                <tr>
+                  <td>{{ eachKey.tasks }}</td>
+                  <td>{{ eachKey.appointDay }}</td>
+                  <td>{{ eachKey.appointTime }}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div id="addAppointments">
+        {% if messages %}
+          {% for message in messages %}
+            <br><span id = "red">{{ message }}</span>
+          {% endfor %}
+        {% endif %}
+
+        <h3>Add Appointment</h3>
+        <form class="" action="addAppointment" method="post">
+          {% csrf_token %}
+          <p><label>Date: </label><input type="text" id="datepicker" name ='date'></p>
+          <p><label>Time: </label><input type="time" name="time"></p>
+          <p><label>Tasks: </label><input type="text" name="tasks" value=""></p>
+          <input id = "sub" type="submit" name="" value="Add">
+        </form>
+      </div>
+    </div>
+
+
+
+  </body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>edit page</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        $("#datepicker").datepicker({minDate: 0});
+    });
+    </script>
+  </head>
+  <style media="screen">
+    .links{
+      display: inline-block;
+      float: right;
+    }
+    #wrapper{
+      width: 800px;
+    }
+    #content{
+      float: left;
+    }
+    #red{
+      color: red;
+    }
+  </style>
+  <body>
+    <div id="wrapper">
+
+        <form class="links" action="{% url 'users:appointments' %}" method="post">
+          {% csrf_token %}
+          <input type="submit" name="" value="Dashboard">
+        </form>
+
+        <form class="links" action="{% url 'users:logout' %}" method="post">
+          {% csrf_token %}
+          <input type="submit" name="" value="Logout">
+        </form>
+        {% if messages %}
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        {% endif %}
+
+        <div id="content">
+          <form  action="{% url 'users:editAppointment' %}" method="post">
+            {% csrf_token %}
+            <p><label>Tasks: </label><input type="text" name="tasks" value="{{ request.session.tasks }}"></p>
+            <label>Status: </label>
+            <select name = 'status'>
+              <option value="Done">Done</option>
+              <option value="Pending">Pending</option>
+              <option value="Missed">Missed</option>
+            </select>
+            <p><label>Date: </label><input type="text" id="datepicker" name ='date' value = "{{ request.session.date }}"></p>
+            <p><label>Time: </label><input type="time" name="time" value="{{ request.session.time }}"></p>
+            <input id = "sub" type="submit" name="" value="Update">
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
